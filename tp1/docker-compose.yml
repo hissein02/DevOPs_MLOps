@@ -3,11 +3,11 @@ services:
     build:
       context: ./database
     environment:
-      POSTGRES_DB: db
-      POSTGRES_USER: usr
-      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
-      - app-network
+      - backend-network
     volumes:
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -17,25 +17,43 @@ services:
       context: ./backend-api
     depends_on:
       - database
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_CONTAINER: ${DATABASE_CONTAINER}
     networks:
-      - app-network
+      - backend-network
+      - httpd-network
     ports:
       - "8080:8080"
-    restart: unless-stopped
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
 
   httpd:
     build:
       context: ./http-server
     depends_on:
       - backend-api
+    environment:
+      BACKEND_CONTAINER: ${BACKEND_CONTAINER}
     networks:
-      - app-network
+      - httpd-network
     ports:
       - "80:80"
-    restart: unless-stopped
+    restart: always
+
+  
 
 networks:
-  app-network:
+  httpd-network:
+    driver: bridge
+  backend-network:
     driver: bridge
 
 volumes:
