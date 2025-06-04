@@ -1,0 +1,9 @@
+- name: Create backend network
+  docker_network:
+    name: backend_network
+    state: present
+
+- name: Create httpd network
+  docker_network:
+    name: httpd_network
+    state: present
