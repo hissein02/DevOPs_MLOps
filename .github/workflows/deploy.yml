@@ -24,7 +24,9 @@ jobs:
 
       - name: Add SSH private key
         run: |
-          echo "${{ secrets.DEPLOY_KEY }}" > id_rsa
+          echo "${{ secrets.VAULT_PASS }}" > vault_pass.txt
+          ansible-vault decrypt tp3/ansible/secrets.yml --vault-password-file vault_pass.txt
+          mv tp3/ansible/secrets.yml id_rsa
           chmod 600 id_rsa
 
       - name: Deploy with Ansible
