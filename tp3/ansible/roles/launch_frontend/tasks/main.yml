@@ -1,6 +1,6 @@
 - name: Run frontend container
   docker_container:
-    name: my_frontend
+    name: frontend
     image: hissein/tp-devops-frontend
     pull: true
     recreate: true
