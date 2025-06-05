@@ -2,6 +2,9 @@
   docker_container:
     name: my_postgres
     image: hissein/tp-devops-database
+    pull: true
+    recreate: true
+    force_kill: true
     networks:
       - name: backend_network
     env:
