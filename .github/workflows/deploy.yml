@@ -30,4 +30,7 @@ jobs:
       - name: Deploy with Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: false
-        run: ansible-playbook -i tp3/ansible/inventories/setup.yml tp3/ansible/playbook.yml
+        run: |
+          echo "${{ secrets.VAULT_PASS }}" > vault_pass.txt
+          ansible-playbook -i tp3/ansible/inventories/setup.yml tp3/ansible/playbook.yml --vault-password-file vault_pass.txt
+          rm vault_pass.txt
