@@ -2,6 +2,9 @@
   docker_container:
     name: simple-api
     image: hissein/tp-devops-simple-api
+    pull: true
+    recreate: true
+    force_kill: true
     networks:
       - name: backend_network
       - name: httpd_network
